@@ -448,51 +448,50 @@
             }
 
             list.innerHTML = sessions.map(session => {
+                const sentBadge = session.sent ? '<span class="sent-badge">✓ Отправлено</span>' : '';
+                const cardClass = session.sent ? 'session-card sent' : 'session-card';
+                
+                // Если отправлено - показываем оценку как текст, если нет - как выпадающий список
+                let gradeHtml;
                 if (session.sent) {
-                    // Уже отправлено - показываем упрощённую карточку
-                    return `
-                        <div class="session-card sent" id="session-${session.id}">
-                            <div class="session-header">
-                                <span class="session-info">
-                                    ${session.surname} (${session.group})
-                                    <span class="sent-badge">✓ Отправлено</span>
-                                </span>
-                                <span class="session-ticket">Билет ${session.ticketId}</span>
-                                <span class="grade-display">Оценка: ${session.grade}</span>
-                            </div>
-                            <div class="session-controls">
-                                <button class="btn btn-return" onclick="returnSession(${session.id})">🔄 Вернуть билет</button>
-                            </div>
-                        </div>
-                    `;
+                    gradeHtml = `<span class="grade-display">Оценка: ${session.grade}</span>`;
                 } else {
-                    // Ещё не отправлено
-                    return `
-                        <div class="session-card" id="session-${session.id}">
-                            <div class="session-header">
-                                <span class="session-info">${session.surname} (${session.group})</span>
-                                <span class="session-ticket">Билет ${session.ticketId}</span>
-                            </div>
-                            <div class="session-questions">
-                                <div><span class="question-label">1.</span> ${session.question1}</div>
-                                <div><span class="question-label">2.</span> ${session.question2}</div>
-                            </div>
-                            <div class="session-controls">
-                                <select id="grade-${session.id}">
-                                    <option value="">Оценка</option>
-                                    <option value="5">5</option>
-                                    <option value="4">4</option>
-                                    <option value="3">3</option>
-                                    <option value="2">2</option>
-                                    <option value="неявка">Неявка</option>
-                                </select>
-                                <button class="btn btn-send" id="btn-send-${session.id}" onclick="sendSession(${session.id})">📤 Отправить</button>
-                                <button class="btn btn-return" onclick="returnSession(${session.id})">🔄 Вернуть билет</button>
-                            </div>
-                            <div class="session-status" id="status-${session.id}" style="display:none;"></div>
-                        </div>
+                    gradeHtml = `
+                        <select id="grade-${session.id}">
+                            <option value="">Оценка</option>
+                            <option value="5">5</option>
+                            <option value="4">4</option>
+                            <option value="3">3</option>
+                            <option value="2">2</option>
+                            <option value="неявка">Неявка</option>
+                        </select>
                     `;
                 }
+                
+                // Кнопка отправить только если ещё не отправлено
+                const sendBtn = session.sent ? '' : `<button class="btn btn-send" id="btn-send-${session.id}" onclick="sendSession(${session.id})">📤 Отправить</button>`;
+                
+                return `
+                    <div class="${cardClass}" id="session-${session.id}">
+                        <div class="session-header">
+                            <span class="session-info">
+                                ${session.surname} (${session.group})
+                                ${sentBadge}
+                            </span>
+                            <span class="session-ticket">Билет ${session.ticketId}</span>
+                        </div>
+                        <div class="session-questions">
+                            <div><span class="question-label">1.</span> ${session.question1}</div>
+                            <div><span class="question-label">2.</span> ${session.question2}</div>
+                        </div>
+                        <div class="session-controls">
+                            ${gradeHtml}
+                            ${sendBtn}
+                            <button class="btn btn-return" onclick="returnSession(${session.id})">🔄 Вернуть билет</button>
+                        </div>
+                        <div class="session-status" id="status-${session.id}" style="display:none;"></div>
+                    </div>
+                `;
             }).join('');
         }
 

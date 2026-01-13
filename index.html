@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Экзаменационные билеты</title>
+    <title>📚 Экзамен</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             padding: 20px;
         }
 
@@ -23,458 +23,305 @@
             margin: 0 auto;
         }
 
-        /* Шаг ввода имени */
-        .step {
-            display: none;
-        }
-
-        .step.active {
-            display: block;
-        }
-
-        .name-form {
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
+        h1 {
             text-align: center;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            max-width: 500px;
-            margin: 50px auto;
-        }
-
-        .name-form h1 {
-            color: #667eea;
-            margin-bottom: 10px;
-        }
-
-        .name-form p {
-            color: #666;
-            margin-bottom: 30px;
-        }
-
-        .name-form input {
-            width: 100%;
-            padding: 15px 20px;
-            font-size: 1.1rem;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
+            color: white;
             margin-bottom: 20px;
-            outline: none;
-            transition: border-color 0.3s;
+            font-size: 2em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
         }
 
-        .name-form input:focus {
+        /* Форма ввода */
+        .input-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .input-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .input-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
             border-color: #667eea;
         }
 
-        .btn {
-            padding: 15px 40px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: white;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
+        /* Билеты */
+        .tickets-section {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        /* Заголовок */
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            color: white;
-        }
-
-        .header h1 {
-            font-size: 2rem;
-            margin-bottom: 8px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        .student-name {
-            font-size: 1.2rem;
-            opacity: 0.95;
-            margin-bottom: 15px;
-        }
-
-        .stats {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .stat {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-        }
-
-        /* Сетка билетов */
         .tickets-grid {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 15px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            gap: 10px;
         }
 
-        @media (max-width: 700px) {
-            .tickets-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-
-        @media (max-width: 400px) {
-            .tickets-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        /* Карточка билета */
-        .ticket-card {
+        .ticket-btn {
             aspect-ratio: 1;
-            perspective: 1000px;
+            border: none;
+            border-radius: 10px;
             cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            background: linear-gradient(145deg, #4CAF50, #45a049);
+            color: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
         }
 
-        .ticket-card.taken {
+        .ticket-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+
+        .ticket-btn.taken {
+            background: linear-gradient(145deg, #9e9e9e, #757575);
             cursor: not-allowed;
         }
 
-        .ticket-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            transition: transform 0.6s;
-            transform-style: preserve-3d;
+        .ticket-btn.taken:hover {
+            transform: none;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
         }
 
-        .ticket-card.taken .ticket-inner {
-            transform: rotateY(180deg);
-        }
-
-        .ticket-front,
-        .ticket-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
-            border-radius: 16px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .ticket-front {
-            background: linear-gradient(145deg, #ffffff, #f0f0f0);
-            border: 3px solid #667eea;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .ticket-card:not(.taken):hover .ticket-front {
-            transform: scale(1.05);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .ticket-number {
-            font-size: 2rem;
-            color: #667eea;
-        }
-
-        .ticket-icon {
-            font-size: 1.5rem;
-            margin-top: 5px;
-        }
-
-        .ticket-back {
-            background: linear-gradient(145deg, #e0e0e0, #c0c0c0);
-            transform: rotateY(180deg);
-            border: 3px solid #999;
-        }
-
-        .ticket-back span {
-            font-size: 2.5rem;
-            color: #666;
-        }
-
-        /* Модальное окно */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.7);
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            z-index: 1000;
-        }
-
-        .modal-overlay.active {
-            display: flex;
-        }
-
-        .modal {
+        /* Результат */
+        .result-section {
             background: white;
-            border-radius: 20px;
-            max-width: 550px;
-            width: 100%;
-            max-height: 90vh;
-            overflow-y: auto;
-            animation: slideUp 0.4s ease;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: none;
         }
 
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .result-section.active {
+            display: block;
         }
 
-        .modal-header {
+        .result-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 30px;
-            text-align: center;
-            border-radius: 20px 20px 0 0;
-        }
-
-        .modal-header h2 {
             color: white;
-            font-size: 1.8rem;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
         }
 
-        .modal-header .student {
-            color: rgba(255,255,255,0.9);
-            margin-top: 5px;
+        .result-header h2 {
+            margin-bottom: 5px;
         }
 
-        .modal-content {
-            padding: 30px;
+        .result-info {
+            display: grid;
+            gap: 5px;
+            font-size: 14px;
+        }
+
+        .questions-block {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
         }
 
         .question {
-            margin-bottom: 25px;
-            padding: 20px;
-            background: #f8f9ff;
-            border-radius: 12px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
             border-left: 4px solid #667eea;
         }
 
-        .question:last-of-type {
+        .question:last-child {
             margin-bottom: 0;
         }
 
         .question-label {
-            font-size: 0.85rem;
-            font-weight: 600;
+            font-weight: bold;
             color: #667eea;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
-        .question p {
-            font-size: 1.1rem;
-            line-height: 1.6;
+        .grade-section {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .grade-section label {
+            font-weight: bold;
             color: #333;
         }
 
-        .modal-footer {
-            padding: 20px 30px 30px;
+        .grade-section select {
+            padding: 12px 20px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .buttons-row {
             display: flex;
             gap: 15px;
             flex-wrap: wrap;
-            justify-content: center;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
         }
 
         .btn-send {
-            background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+            background: linear-gradient(145deg, #4CAF50, #45a049);
+            color: white;
         }
 
-        .btn-close {
-            background: #e0e0e0;
-            color: #333;
+        .btn-send:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
         }
 
         .btn-return {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-
-        /* Панель преподавателя */
-        .teacher-panel {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            margin-top: 30px;
-        }
-
-        .teacher-panel h3 {
+            background: linear-gradient(145deg, #ff9800, #f57c00);
             color: white;
-            margin-bottom: 15px;
-            text-align: center;
         }
 
-        .taken-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            justify-content: center;
+        .btn-return:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4);
         }
 
-        .taken-item {
-            background: white;
-            padding: 10px 15px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 0.9rem;
-        }
-
-        .taken-item .name {
-            font-weight: 600;
-            color: #667eea;
-        }
-
-        .taken-item .ticket-num {
-            color: #666;
-        }
-
-        .btn-small {
-            padding: 5px 12px;
-            font-size: 0.8rem;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-            border: none;
-            border-radius: 15px;
-            cursor: pointer;
-        }
-
-        /* Сообщение об успехе */
-        .success-message {
+        .status-message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
             display: none;
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #56ab2f;
-            color: white;
-            padding: 15px 25px;
-            border-radius: 10px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-            z-index: 2000;
-            animation: slideIn 0.3s ease;
         }
 
-        .success-message.show {
+        .status-message.success {
             display: block;
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
         }
 
-        @keyframes slideIn {
-            from {
-                opacity: 0;
-                transform: translateX(100px);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0);
-            }
+        .status-message.error {
+            display: block;
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Шаг 1: Ввод фамилии -->
-        <div id="step-name" class="step active">
-            <div class="name-form">
-                <h1>📚 Экзамен</h1>
-                <p>Введите вашу фамилию, чтобы выбрать билет</p>
-                <input type="text" id="student-name" placeholder="Ваша фамилия..." autocomplete="off">
-                <br>
-                <button class="btn" id="btn-start" onclick="startExam()">Продолжить</button>
+        <h1>📚 Экзаменационные билеты</h1>
+
+        <!-- Ввод данных -->
+        <div class="input-section">
+            <div class="input-row">
+                <div class="input-group">
+                    <label>Фамилия студента:</label>
+                    <input type="text" id="surname" placeholder="Введите фамилию">
+                </div>
+                <div class="input-group">
+                    <label>Группа:</label>
+                    <select id="group">
+                        <option value="">-- Выберите группу --</option>
+                        <option value="ИИБ-501-О">ИИБ-501-О</option>
+                        <option value="ИУБ-501-О">ИУБ-501-О</option>
+                    </select>
+                </div>
             </div>
         </div>
 
-        <!-- Шаг 2: Выбор билета -->
-        <div id="step-tickets" class="step">
-            <div class="header">
-                <h1>📚 Экзаменационные билеты</h1>
-                <p class="student-name">Студент: <strong id="display-name"></strong></p>
-                <div class="stats">
-                    <span class="stat">🟢 Доступно: <span id="available-count">0</span></span>
-                    <span class="stat">🔴 Занято: <span id="taken-count">0</span></span>
+        <!-- Билеты -->
+        <div class="tickets-section">
+            <div class="tickets-grid" id="ticketsGrid"></div>
+        </div>
+
+        <!-- Результат -->
+        <div class="result-section" id="resultSection">
+            <div class="result-header">
+                <h2>🎫 Билет № <span id="ticketNumber"></span></h2>
+                <div class="result-info">
+                    <div>Студент: <strong id="resultSurname"></strong></div>
+                    <div>Группа: <strong id="resultGroup"></strong></div>
                 </div>
             </div>
 
-            <div class="tickets-grid" id="tickets-grid">
-                <!-- Карточки билетов создаются через JavaScript -->
-            </div>
-
-            <!-- Панель преподавателя -->
-            <div class="teacher-panel" id="teacher-panel" style="display: none;">
-                <h3>👨‍🏫 Взятые билеты</h3>
-                <div class="taken-list" id="taken-list"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Модальное окно с билетом -->
-    <div class="modal-overlay" id="modal">
-        <div class="modal">
-            <div class="modal-header">
-                <h2 id="modal-title">Билет №1</h2>
-                <p class="student">Студент: <span id="modal-student"></span></p>
-            </div>
-            <div class="modal-content">
+            <div class="questions-block">
                 <div class="question">
-                    <div class="question-label">Вопрос 1</div>
-                    <p id="modal-q1"></p>
+                    <div class="question-label">Вопрос 1:</div>
+                    <div id="question1"></div>
                 </div>
                 <div class="question">
-                    <div class="question-label">Вопрос 2</div>
-                    <p id="modal-q2"></p>
+                    <div class="question-label">Вопрос 2:</div>
+                    <div id="question2"></div>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-send" onclick="sendToSheet()">📤 Отправить в таблицу</button>
-                <button class="btn btn-close" onclick="closeModal()">Закрыть</button>
-            </div>
-        </div>
-    </div>
 
-    <!-- Сообщение об успехе -->
-    <div class="success-message" id="success-message">
-        ✅ Данные отправлены в таблицу!
+            <div class="grade-section">
+                <label>Оценка:</label>
+                <select id="grade">
+                    <option value="">-- Выберите --</option>
+                    <option value="5">5 (отлично)</option>
+                    <option value="4">4 (хорошо)</option>
+                    <option value="3">3 (удовлетворительно)</option>
+                    <option value="2">2 (неудовлетворительно)</option>
+                    <option value="неявка">Неявка</option>
+                </select>
+            </div>
+
+            <div class="buttons-row">
+                <button class="btn btn-send" onclick="sendData()">📤 Отправить в таблицу</button>
+                <button class="btn btn-return" onclick="returnTicket()">🔄 Вернуть билет</button>
+            </div>
+
+            <div class="status-message" id="statusMessage"></div>
+        </div>
     </div>
 
     <script>
-        // ========== НАСТРОЙКИ ==========
-        // Ссылка на Google Apps Script (заполнишь позже)
-        const GOOGLE_SCRIPT_URL = '';
-
         // ========== БИЛЕТЫ ==========
-        // Здесь редактируй свои билеты!
         const tickets = [
             {
                 id: 1,
@@ -568,160 +415,104 @@
             }
         ];
 
-        // ========== СОСТОЯНИЕ ==========
-        let currentStudent = '';
-        let selectedTicket = null;
-        let takenTickets = []; // {ticketId, studentName, timestamp}
-        let shuffledTickets = [];
+        // Ссылки на Google Таблицы
+        const googleSheets = {
+            "ИИБ-501-О": "https://script.google.com/macros/s/AKfycbxMLqaWGQv4Qsn1tkuUzpybw_NMWExyZK6pPFtDInn8TX7CRwf8KVfle6eDHg1pklCXYw/exec",
+            "ИУБ-501-О": "https://script.google.com/macros/s/AKfycbx8OBX3SosuJ1nNFGXo_M_M6rfd02ckyK99wRUuvKP583iZCmwvPEbe7J2PiPDb2XJW/exec"
+        };
 
-        // ========== ФУНКЦИИ ==========
+        let takenTickets = JSON.parse(localStorage.getItem('takenTickets')) || [];
+        let currentTicket = null;
 
-        // Перемешивание массива
-        function shuffleArray(array) {
-            const newArray = [...array];
-            for (let i = newArray.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
-            }
-            return newArray;
-        }
-
-        // Начать экзамен
-        function startExam() {
-            const nameInput = document.getElementById('student-name');
-            const name = nameInput.value.trim();
-            
-            if (!name) {
-                nameInput.style.borderColor = '#f5576c';
-                nameInput.placeholder = 'Введите фамилию!';
-                return;
-            }
-
-            currentStudent = name;
-            document.getElementById('display-name').textContent = name;
-            
-            // Перемешиваем билеты
-            shuffledTickets = shuffleArray(tickets);
-            
-            // Показываем экран с билетами
-            document.getElementById('step-name').classList.remove('active');
-            document.getElementById('step-tickets').classList.add('active');
-            
-            renderTickets();
-            updateStats();
-        }
-
-        // Отрисовка билетов
+        // Создание кнопок
         function renderTickets() {
-            const grid = document.getElementById('tickets-grid');
+            const grid = document.getElementById('ticketsGrid');
             grid.innerHTML = '';
-
-            shuffledTickets.forEach(ticket => {
-                const isTaken = takenTickets.some(t => t.ticketId === ticket.id);
-                
-                const card = document.createElement('div');
-                card.className = `ticket-card ${isTaken ? 'taken' : ''}`;
-                card.onclick = () => selectTicket(ticket);
-                
-                card.innerHTML = `
-                    <div class="ticket-inner">
-                        <div class="ticket-front">
-                            <span class="ticket-number">${ticket.id}</span>
-                            <span class="ticket-icon">🎫</span>
-                        </div>
-                        <div class="ticket-back">
-                            <span>✓</span>
-                        </div>
-                    </div>
-                `;
-                
-                grid.appendChild(card);
+            
+            tickets.forEach(ticket => {
+                const btn = document.createElement('button');
+                btn.className = 'ticket-btn';
+                if (takenTickets.includes(ticket.id)) {
+                    btn.classList.add('taken');
+                }
+                // Кнопки пустые - без номеров
+                btn.innerHTML = '';
+                btn.onclick = () => selectTicket(ticket.id);
+                grid.appendChild(btn);
             });
         }
 
         // Выбор билета
-        function selectTicket(ticket) {
-            const isTaken = takenTickets.some(t => t.ticketId === ticket.id);
-            if (isTaken) return;
+        function selectTicket(id) {
+            const surname = document.getElementById('surname').value.trim();
+            const group = document.getElementById('group').value;
 
-            selectedTicket = ticket;
-            
-            document.getElementById('modal-title').textContent = `Билет №${ticket.id}`;
-            document.getElementById('modal-student').textContent = currentStudent;
-            document.getElementById('modal-q1').textContent = ticket.question1;
-            document.getElementById('modal-q2').textContent = ticket.question2;
-            
-            document.getElementById('modal').classList.add('active');
-        }
-
-        // Закрыть модальное окно
-        function closeModal() {
-            document.getElementById('modal').classList.remove('active');
-        }
-
-        // Обновить статистику
-        function updateStats() {
-            const available = tickets.length - takenTickets.length;
-            document.getElementById('available-count').textContent = available;
-            document.getElementById('taken-count').textContent = takenTickets.length;
-            
-            // Показать/скрыть панель преподавателя
-            const panel = document.getElementById('teacher-panel');
-            if (takenTickets.length > 0) {
-                panel.style.display = 'block';
-                renderTakenList();
-            } else {
-                panel.style.display = 'none';
+            if (!surname) {
+                alert('Введите фамилию студента!');
+                return;
             }
-        }
 
-        // Отрисовка списка взятых билетов
-        function renderTakenList() {
-            const list = document.getElementById('taken-list');
-            list.innerHTML = '';
+            if (!group) {
+                alert('Выберите группу!');
+                return;
+            }
+
+            if (takenTickets.includes(id)) {
+                alert('Этот билет уже взят!');
+                return;
+            }
+
+            currentTicket = tickets.find(t => t.id === id);
             
-            takenTickets.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'taken-item';
-                div.innerHTML = `
-                    <span class="name">${item.studentName}</span>
-                    <span class="ticket-num">Билет №${item.ticketId}</span>
-                    <button class="btn-small" onclick="returnTicket(${item.ticketId})">Вернуть</button>
-                `;
-                list.appendChild(div);
-            });
-        }
+            // Показываем результат
+            document.getElementById('ticketNumber').textContent = currentTicket.id;
+            document.getElementById('resultSurname').textContent = surname;
+            document.getElementById('resultGroup').textContent = group;
+            document.getElementById('question1').textContent = currentTicket.question1;
+            document.getElementById('question2').textContent = currentTicket.question2;
+            document.getElementById('grade').value = '';
+            document.getElementById('statusMessage').className = 'status-message';
+            document.getElementById('statusMessage').textContent = '';
+            
+            document.getElementById('resultSection').classList.add('active');
 
-        // Вернуть билет
-        function returnTicket(ticketId) {
-            takenTickets = takenTickets.filter(t => t.ticketId !== ticketId);
-            shuffledTickets = shuffleArray(shuffledTickets);
+            // Отмечаем билет как взятый
+            takenTickets.push(id);
+            localStorage.setItem('takenTickets', JSON.stringify(takenTickets));
             renderTickets();
-            updateStats();
         }
 
-        // Отправить в Google Таблицу
-        function sendToSheet() {
-            if (!selectedTicket) return;
+        // Отправка данных
+        async function sendData() {
+            const surname = document.getElementById('resultSurname').textContent;
+            const group = document.getElementById('resultGroup').textContent;
+            const grade = document.getElementById('grade').value;
+            const statusMessage = document.getElementById('statusMessage');
 
-            // Добавляем в список взятых
-            takenTickets.push({
-                ticketId: selectedTicket.id,
-                studentName: currentStudent,
-                timestamp: new Date().toLocaleString('ru-RU')
-            });
+            if (!grade) {
+                alert('Выберите оценку!');
+                return;
+            }
 
-            // Отправляем в Google Sheets (если настроено)
-            if (GOOGLE_SCRIPT_URL) {
-                const data = {
-                    student: currentStudent,
-                    ticketId: selectedTicket.id,
-                    question1: selectedTicket.question1,
-                    question2: selectedTicket.question2,
-                    timestamp: new Date().toLocaleString('ru-RU')
-                };
+            const sheetUrl = googleSheets[group];
+            
+            const data = {
+                surname: surname,
+                group: group,
+                ticketNumber: currentTicket.id,
+                question1: currentTicket.question1,
+                question2: currentTicket.question2,
+                grade: grade
+            };
 
-                fetch(GOOGLE_SCRIPT_URL, {
+            try {
+                statusMessage.className = 'status-message';
+                statusMessage.textContent = 'Отправка...';
+                statusMessage.style.display = 'block';
+                statusMessage.style.background = '#fff3cd';
+                statusMessage.style.color = '#856404';
+
+                await fetch(sheetUrl, {
                     method: 'POST',
                     mode: 'no-cors',
                     headers: {
@@ -729,38 +520,40 @@
                     },
                     body: JSON.stringify(data)
                 });
+
+                statusMessage.className = 'status-message success';
+                statusMessage.textContent = '✅ Данные отправлены в таблицу!';
+
+                // Скрываем результат через 2 секунды
+                setTimeout(() => {
+                    document.getElementById('resultSection').classList.remove('active');
+                    document.getElementById('surname').value = '';
+                    currentTicket = null;
+                }, 2000);
+
+            } catch (error) {
+                statusMessage.className = 'status-message error';
+                statusMessage.textContent = '❌ Ошибка отправки: ' + error.message;
             }
-
-            // Закрываем модальное окно
-            closeModal();
-
-            // Показываем сообщение об успехе
-            const msg = document.getElementById('success-message');
-            msg.classList.add('show');
-            setTimeout(() => msg.classList.remove('show'), 3000);
-
-            // Перемешиваем и обновляем
-            shuffledTickets = shuffleArray(shuffledTickets);
-            renderTickets();
-            updateStats();
-
-            // Сбрасываем для следующего студента
-            currentStudent = '';
-            document.getElementById('student-name').value = '';
-            
-            // Возвращаемся к вводу имени
-            setTimeout(() => {
-                document.getElementById('step-tickets').classList.remove('active');
-                document.getElementById('step-name').classList.add('active');
-            }, 1500);
         }
 
-        // Обработка Enter в поле ввода
-        document.getElementById('student-name').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                startExam();
+        // Вернуть билет
+        function returnTicket() {
+            if (currentTicket) {
+                takenTickets = takenTickets.filter(id => id !== currentTicket.id);
+                localStorage.setItem('takenTickets', JSON.stringify(takenTickets));
+                renderTickets();
+                
+                document.getElementById('resultSection').classList.remove('active');
+                currentTicket = null;
+                
+                alert('Билет возвращён!');
             }
-        });
+        }
+
+        // Запуск
+        renderTickets();
     </script>
 </body>
 </html>
+

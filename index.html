@@ -163,6 +163,11 @@
             margin-bottom: 10px;
         }
 
+        .session-card.sent {
+            background: #e3f2fd;
+            border-color: #90caf9;
+        }
+
         .session-header {
             display: flex;
             justify-content: space-between;
@@ -177,12 +182,20 @@
             color: #2e7d32;
         }
 
+        .session-card.sent .session-info {
+            color: #1565c0;
+        }
+
         .session-ticket {
             background: #4caf50;
             color: white;
             padding: 4px 12px;
             border-radius: 15px;
             font-size: 14px;
+        }
+
+        .session-card.sent .session-ticket {
+            background: #1976d2;
         }
 
         .session-questions {
@@ -236,6 +249,11 @@
             background: #388e3c;
         }
 
+        .btn-send:disabled {
+            background: #a5d6a7;
+            cursor: not-allowed;
+        }
+
         .btn-return {
             background: #ff9800;
             color: white;
@@ -250,6 +268,7 @@
             padding: 5px 10px;
             border-radius: 5px;
             margin-top: 8px;
+            display: inline-block;
         }
 
         .session-status.success {
@@ -265,6 +284,24 @@
         .session-status.sending {
             background: #fff9c4;
             color: #f57f17;
+        }
+
+        .sent-badge {
+            background: #1976d2;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            margin-left: 10px;
+        }
+
+        .grade-display {
+            background: #bbdefb;
+            color: #1565c0;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 13px;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -385,7 +422,7 @@
                 question1: ticket.question1,
                 question2: ticket.question2,
                 grade: '',
-                status: 'active'
+                sent: false
             };
 
             sessions.push(session);
@@ -394,7 +431,7 @@
             localStorage.setItem('sessions', JSON.stringify(sessions));
             localStorage.setItem('takenTickets', JSON.stringify(takenTickets));
             
-            // Очищаем поля ввода
+            // Очищаем поле фамилии
             document.getElementById('surname').value = '';
             
             renderTickets();
@@ -405,45 +442,67 @@
         function renderSessions() {
             const list = document.getElementById('sessionsList');
             
-            const activeSessions = sessions.filter(s => s.status === 'active');
-            
-            if (activeSessions.length === 0) {
+            if (sessions.length === 0) {
                 list.innerHTML = '<div class="no-sessions">Пока нет активных сессий</div>';
                 return;
             }
 
-            list.innerHTML = activeSessions.map(session => `
-                <div class="session-card" id="session-${session.id}">
-                    <div class="session-header">
-                        <span class="session-info">${session.surname} (${session.group})</span>
-                        <span class="session-ticket">Билет ${session.ticketId}</span>
-                    </div>
-                    <div class="session-questions">
-                        <div><span class="question-label">1.</span> ${session.question1}</div>
-                        <div><span class="question-label">2.</span> ${session.question2}</div>
-                    </div>
-                    <div class="session-controls">
-                        <select id="grade-${session.id}">
-                            <option value="">Оценка</option>
-                            <option value="5">5</option>
-                            <option value="4">4</option>
-                            <option value="3">3</option>
-                            <option value="2">2</option>
-                            <option value="неявка">Неявка</option>
-                        </select>
-                        <button class="btn btn-send" onclick="sendSession(${session.id})">📤 Отправить</button>
-                        <button class="btn btn-return" onclick="returnSession(${session.id})">🔄 Вернуть</button>
-                    </div>
-                    <div class="session-status" id="status-${session.id}" style="display:none;"></div>
-                </div>
-            `).join('');
+            list.innerHTML = sessions.map(session => {
+                if (session.sent) {
+                    // Уже отправлено - показываем упрощённую карточку
+                    return `
+                        <div class="session-card sent" id="session-${session.id}">
+                            <div class="session-header">
+                                <span class="session-info">
+                                    ${session.surname} (${session.group})
+                                    <span class="sent-badge">✓ Отправлено</span>
+                                </span>
+                                <span class="session-ticket">Билет ${session.ticketId}</span>
+                                <span class="grade-display">Оценка: ${session.grade}</span>
+                            </div>
+                            <div class="session-controls">
+                                <button class="btn btn-return" onclick="returnSession(${session.id})">🔄 Вернуть билет</button>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    // Ещё не отправлено
+                    return `
+                        <div class="session-card" id="session-${session.id}">
+                            <div class="session-header">
+                                <span class="session-info">${session.surname} (${session.group})</span>
+                                <span class="session-ticket">Билет ${session.ticketId}</span>
+                            </div>
+                            <div class="session-questions">
+                                <div><span class="question-label">1.</span> ${session.question1}</div>
+                                <div><span class="question-label">2.</span> ${session.question2}</div>
+                            </div>
+                            <div class="session-controls">
+                                <select id="grade-${session.id}">
+                                    <option value="">Оценка</option>
+                                    <option value="5">5</option>
+                                    <option value="4">4</option>
+                                    <option value="3">3</option>
+                                    <option value="2">2</option>
+                                    <option value="неявка">Неявка</option>
+                                </select>
+                                <button class="btn btn-send" id="btn-send-${session.id}" onclick="sendSession(${session.id})">📤 Отправить</button>
+                                <button class="btn btn-return" onclick="returnSession(${session.id})">🔄 Вернуть билет</button>
+                            </div>
+                            <div class="session-status" id="status-${session.id}" style="display:none;"></div>
+                        </div>
+                    `;
+                }
+            }).join('');
         }
 
         // Отправка данных
         async function sendSession(sessionId) {
             const session = sessions.find(s => s.id === sessionId);
-            const grade = document.getElementById(`grade-${sessionId}`).value;
+            const gradeSelect = document.getElementById(`grade-${sessionId}`);
+            const grade = gradeSelect.value;
             const statusEl = document.getElementById(`status-${sessionId}`);
+            const sendBtn = document.getElementById(`btn-send-${sessionId}`);
 
             if (!grade) {
                 alert('Выберите оценку!');
@@ -466,6 +525,7 @@
                 statusEl.style.display = 'block';
                 statusEl.className = 'session-status sending';
                 statusEl.textContent = '⏳ Отправка...';
+                sendBtn.disabled = true;
 
                 await fetch(sheetUrl, {
                     method: 'POST',
@@ -474,19 +534,17 @@
                     body: JSON.stringify(data)
                 });
 
-                statusEl.className = 'session-status success';
-                statusEl.textContent = '✅ Отправлено!';
-
-                // Удаляем сессию через 1.5 секунды
-                setTimeout(() => {
-                    sessions = sessions.filter(s => s.id !== sessionId);
-                    localStorage.setItem('sessions', JSON.stringify(sessions));
-                    renderSessions();
-                }, 1500);
+                // Отмечаем как отправленное
+                session.sent = true;
+                localStorage.setItem('sessions', JSON.stringify(sessions));
+                
+                // Перерисовываем
+                renderSessions();
 
             } catch (error) {
                 statusEl.className = 'session-status error';
                 statusEl.textContent = '❌ Ошибка: ' + error.message;
+                sendBtn.disabled = false;
             }
         }
 
@@ -495,14 +553,16 @@
             const session = sessions.find(s => s.id === sessionId);
             
             if (session) {
-                takenTickets = takenTickets.filter(id => id !== session.ticketId);
-                sessions = sessions.filter(s => s.id !== sessionId);
-                
-                localStorage.setItem('takenTickets', JSON.stringify(takenTickets));
-                localStorage.setItem('sessions', JSON.stringify(sessions));
-                
-                renderTickets();
-                renderSessions();
+                if (confirm(`Вернуть билет ${session.ticketId} (${session.surname})?`)) {
+                    takenTickets = takenTickets.filter(id => id !== session.ticketId);
+                    sessions = sessions.filter(s => s.id !== sessionId);
+                    
+                    localStorage.setItem('takenTickets', JSON.stringify(takenTickets));
+                    localStorage.setItem('sessions', JSON.stringify(sessions));
+                    
+                    renderTickets();
+                    renderSessions();
+                }
             }
         }
 
@@ -512,4 +572,3 @@
     </script>
 </body>
 </html>
-

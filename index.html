@@ -374,21 +374,54 @@
 
         let takenTickets = JSON.parse(localStorage.getItem('takenTickets')) || [];
         let sessions = JSON.parse(localStorage.getItem('sessions')) || [];
+        let shuffledAvailable = []; // Перемешанные доступные билеты
+
+        // Функция перемешивания массива (алгоритм Фишера-Йетса)
+        function shuffle(array) {
+            const result = [...array];
+            for (let i = result.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [result[i], result[j]] = [result[j], result[i]];
+            }
+            return result;
+        }
+
+        // Перемешать доступные билеты
+        function reshuffleAvailable() {
+            const availableTickets = tickets.filter(t => !takenTickets.includes(t.id));
+            shuffledAvailable = shuffle(availableTickets);
+        }
 
         // Создание кнопок
         function renderTickets() {
             const grid = document.getElementById('ticketsGrid');
             grid.innerHTML = '';
             
-            tickets.forEach(ticket => {
+            let availableIndex = 0;
+            
+            // Создаём 18 кнопок
+            for (let i = 0; i < 18; i++) {
                 const btn = document.createElement('button');
                 btn.className = 'ticket-btn';
-                if (takenTickets.includes(ticket.id)) {
+                
+                // Считаем сколько взятых билетов
+                const takenCount = takenTickets.length;
+                
+                // Если позиция меньше количества взятых - серая кнопка
+                if (i < takenCount) {
                     btn.classList.add('taken');
+                    btn.onclick = () => alert('Этот билет уже взят!');
+                } else {
+                    // Иначе - доступный билет из перемешанного массива
+                    if (availableIndex < shuffledAvailable.length) {
+                        const ticket = shuffledAvailable[availableIndex];
+                        btn.onclick = () => selectTicket(ticket.id);
+                        availableIndex++;
+                    }
                 }
-                btn.onclick = () => selectTicket(ticket.id);
+                
                 grid.appendChild(btn);
-            });
+            }
         }
 
         // Выбор билета
@@ -434,6 +467,9 @@
             // Очищаем поле фамилии
             document.getElementById('surname').value = '';
             
+            // Перемешиваем оставшиеся билеты
+            reshuffleAvailable();
+            
             renderTickets();
             renderSessions();
         }
@@ -451,7 +487,6 @@
                 const sentBadge = session.sent ? '<span class="sent-badge">✓ Отправлено</span>' : '';
                 const cardClass = session.sent ? 'session-card sent' : 'session-card';
                 
-                // Если отправлено - показываем оценку как текст, если нет - как выпадающий список
                 let gradeHtml;
                 if (session.sent) {
                     gradeHtml = `<span class="grade-display">Оценка: ${session.grade}</span>`;
@@ -468,7 +503,6 @@
                     `;
                 }
                 
-                // Кнопка отправить только если ещё не отправлено
                 const sendBtn = session.sent ? '' : `<button class="btn btn-send" id="btn-send-${session.id}" onclick="sendSession(${session.id})">📤 Отправить</button>`;
                 
                 return `
@@ -533,11 +567,9 @@
                     body: JSON.stringify(data)
                 });
 
-                // Отмечаем как отправленное
                 session.sent = true;
                 localStorage.setItem('sessions', JSON.stringify(sessions));
                 
-                // Перерисовываем
                 renderSessions();
 
             } catch (error) {
@@ -559,6 +591,9 @@
                     localStorage.setItem('takenTickets', JSON.stringify(takenTickets));
                     localStorage.setItem('sessions', JSON.stringify(sessions));
                     
+                    // Перемешиваем после возврата
+                    reshuffleAvailable();
+                    
                     renderTickets();
                     renderSessions();
                 }
@@ -566,6 +601,7 @@
         }
 
         // Запуск
+        reshuffleAvailable();
         renderTickets();
         renderSessions();
     </script>

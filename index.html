@@ -14,42 +14,44 @@
 
         body {
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #e8f5e9;
             padding: 20px;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
         }
 
         h1 {
             text-align: center;
-            color: white;
+            color: #2e7d32;
             margin-bottom: 20px;
-            font-size: 2em;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            font-size: 1.8em;
         }
 
-        /* Форма ввода */
+        .main-container {
+            display: flex;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Левая панель */
+        .left-panel {
+            width: 300px;
+            flex-shrink: 0;
+        }
+
         .input-section {
             background: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        .input-row {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            align-items: center;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
         .input-group {
-            flex: 1;
-            min-width: 200px;
+            margin-bottom: 12px;
+        }
+
+        .input-group:last-child {
+            margin-bottom: 0;
         }
 
         .input-group label {
@@ -57,207 +59,222 @@
             margin-bottom: 5px;
             font-weight: bold;
             color: #333;
+            font-size: 14px;
         }
 
         .input-group input,
         .input-group select {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #ddd;
+            padding: 10px;
+            border: 2px solid #c8e6c9;
             border-radius: 8px;
-            font-size: 16px;
+            font-size: 14px;
         }
 
         .input-group input:focus,
         .input-group select:focus {
             outline: none;
-            border-color: #667eea;
+            border-color: #4caf50;
         }
 
-        /* Билеты */
         .tickets-section {
             background: white;
-            border-radius: 15px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .tickets-section h3 {
+            color: #2e7d32;
+            margin-bottom: 12px;
+            text-align: center;
+            font-size: 16px;
         }
 
         .tickets-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
-            gap: 10px;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(6, 1fr);
+            gap: 8px;
         }
 
         .ticket-btn {
             aspect-ratio: 1;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: bold;
-            transition: all 0.3s ease;
-            background: linear-gradient(145deg, #4CAF50, #45a049);
+            transition: all 0.2s ease;
+            background: linear-gradient(145deg, #66bb6a, #4caf50);
             color: white;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+            min-height: 50px;
         }
 
         .ticket-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+            background: linear-gradient(145deg, #81c784, #66bb6a);
         }
 
         .ticket-btn.taken {
-            background: linear-gradient(145deg, #9e9e9e, #757575);
+            background: linear-gradient(145deg, #bdbdbd, #9e9e9e);
             cursor: not-allowed;
         }
 
         .ticket-btn.taken:hover {
             transform: none;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
         }
 
-        /* Результат */
-        .result-section {
+        /* Правая панель */
+        .right-panel {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .sessions-container {
             background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            display: none;
-        }
-
-        .result-section.active {
-            display: block;
-        }
-
-        .result-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            border-radius: 12px;
             padding: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            min-height: 400px;
+        }
+
+        .sessions-container h3 {
+            color: #2e7d32;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .no-sessions {
+            color: #999;
+            text-align: center;
+            padding: 40px;
+            font-style: italic;
+        }
+
+        .session-card {
+            background: #f1f8e9;
+            border: 2px solid #c5e1a5;
             border-radius: 10px;
-            margin-bottom: 20px;
+            padding: 12px;
+            margin-bottom: 10px;
         }
 
-        .result-header h2 {
-            margin-bottom: 5px;
+        .session-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
         }
 
-        .result-info {
-            display: grid;
-            gap: 5px;
+        .session-info {
+            font-weight: bold;
+            color: #2e7d32;
+        }
+
+        .session-ticket {
+            background: #4caf50;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
             font-size: 14px;
         }
 
-        .questions-block {
-            background: #f8f9fa;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
+        .session-questions {
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 10px;
         }
 
-        .question {
-            margin-bottom: 15px;
-            padding: 15px;
+        .session-questions div {
+            margin-bottom: 5px;
+            padding: 6px;
             background: white;
-            border-radius: 8px;
-            border-left: 4px solid #667eea;
-        }
-
-        .question:last-child {
-            margin-bottom: 0;
+            border-radius: 5px;
         }
 
         .question-label {
             font-weight: bold;
-            color: #667eea;
-            margin-bottom: 5px;
+            color: #388e3c;
         }
 
-        .grade-section {
+        .session-controls {
             display: flex;
-            gap: 15px;
+            gap: 10px;
             align-items: center;
             flex-wrap: wrap;
-            margin-bottom: 20px;
         }
 
-        .grade-section label {
-            font-weight: bold;
-            color: #333;
-        }
-
-        .grade-section select {
-            padding: 12px 20px;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            font-size: 16px;
-        }
-
-        .buttons-row {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
+        .session-controls select {
+            padding: 8px;
+            border: 2px solid #c5e1a5;
+            border-radius: 6px;
+            font-size: 14px;
         }
 
         .btn {
-            padding: 15px 30px;
+            padding: 8px 16px;
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: 6px;
+            font-size: 13px;
             font-weight: bold;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
         }
 
         .btn-send {
-            background: linear-gradient(145deg, #4CAF50, #45a049);
+            background: #4caf50;
             color: white;
         }
 
         .btn-send:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+            background: #388e3c;
         }
 
         .btn-return {
-            background: linear-gradient(145deg, #ff9800, #f57c00);
+            background: #ff9800;
             color: white;
         }
 
         .btn-return:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(255, 152, 0, 0.4);
+            background: #f57c00;
         }
 
-        .status-message {
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            display: none;
+        .session-status {
+            font-size: 12px;
+            padding: 5px 10px;
+            border-radius: 5px;
+            margin-top: 8px;
         }
 
-        .status-message.success {
-            display: block;
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
+        .session-status.success {
+            background: #c8e6c9;
+            color: #2e7d32;
         }
 
-        .status-message.error {
-            display: block;
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
+        .session-status.error {
+            background: #ffcdd2;
+            color: #c62828;
+        }
+
+        .session-status.sending {
+            background: #fff9c4;
+            color: #f57f17;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>📚 Экзаменационные билеты</h1>
+    <h1>📚 Экзаменационные билеты</h1>
 
-        <!-- Ввод данных -->
-        <div class="input-section">
-            <div class="input-row">
+    <div class="main-container">
+        <!-- Левая панель -->
+        <div class="left-panel">
+            <div class="input-section">
                 <div class="input-group">
                     <label>Фамилия студента:</label>
                     <input type="text" id="surname" placeholder="Введите фамилию">
@@ -265,154 +282,51 @@
                 <div class="input-group">
                     <label>Группа:</label>
                     <select id="group">
-                        <option value="">-- Выберите группу --</option>
+                        <option value="">-- Выберите --</option>
                         <option value="ИИБ-501-О">ИИБ-501-О</option>
                         <option value="ИУБ-501-О">ИУБ-501-О</option>
                     </select>
                 </div>
             </div>
+
+            <div class="tickets-section">
+                <h3>🎫 Билеты</h3>
+                <div class="tickets-grid" id="ticketsGrid"></div>
+            </div>
         </div>
 
-        <!-- Билеты -->
-        <div class="tickets-section">
-            <div class="tickets-grid" id="ticketsGrid"></div>
-        </div>
-
-        <!-- Результат -->
-        <div class="result-section" id="resultSection">
-            <div class="result-header">
-                <h2>🎫 Билет № <span id="ticketNumber"></span></h2>
-                <div class="result-info">
-                    <div>Студент: <strong id="resultSurname"></strong></div>
-                    <div>Группа: <strong id="resultGroup"></strong></div>
+        <!-- Правая панель -->
+        <div class="right-panel">
+            <div class="sessions-container">
+                <h3>👨‍🎓 Студенты на экзамене</h3>
+                <div id="sessionsList">
+                    <div class="no-sessions">Пока нет активных сессий</div>
                 </div>
             </div>
-
-            <div class="questions-block">
-                <div class="question">
-                    <div class="question-label">Вопрос 1:</div>
-                    <div id="question1"></div>
-                </div>
-                <div class="question">
-                    <div class="question-label">Вопрос 2:</div>
-                    <div id="question2"></div>
-                </div>
-            </div>
-
-            <div class="grade-section">
-                <label>Оценка:</label>
-                <select id="grade">
-                    <option value="">-- Выберите --</option>
-                    <option value="5">5 (отлично)</option>
-                    <option value="4">4 (хорошо)</option>
-                    <option value="3">3 (удовлетворительно)</option>
-                    <option value="2">2 (неудовлетворительно)</option>
-                    <option value="неявка">Неявка</option>
-                </select>
-            </div>
-
-            <div class="buttons-row">
-                <button class="btn btn-send" onclick="sendData()">📤 Отправить в таблицу</button>
-                <button class="btn btn-return" onclick="returnTicket()">🔄 Вернуть билет</button>
-            </div>
-
-            <div class="status-message" id="statusMessage"></div>
         </div>
     </div>
 
     <script>
         // ========== БИЛЕТЫ ==========
         const tickets = [
-            {
-                id: 1,
-                question1: "Законодательство РФ в сфере охраны памятников объектов историко-культурного наследия",
-                question2: "Поздний палеолит"
-            },
-            {
-                id: 2,
-                question1: "Объект и предмет археологии. Место археологии в системе наук",
-                question2: "Археологические культуры палеолита"
-            },
-            {
-                id: 3,
-                question1: "Археологические памятники и их виды",
-                question2: "Эпоха мезолита: общая характеристика"
-            },
-            {
-                id: 4,
-                question1: "Культурный слой и стратиграфия",
-                question2: "Археологические культуры эпохи мезолита"
-            },
-            {
-                id: 5,
-                question1: "Археологический источник",
-                question2: "Эпоха неолита: общая характеристика"
-            },
-            {
-                id: 6,
-                question1: "Археологическая культура",
-                question2: "Археологические культуры эпохи неолита южной зоны производящего хозяйства"
-            },
-            {
-                id: 7,
-                question1: "Хронология и периодизация в археологии",
-                question2: "Археологические культуры эпохи неолита северной зоны присваивающего хозяйства"
-            },
-            {
-                id: 8,
-                question1: "Классификация в археологии",
-                question2: "Общая характеристика эпохи палеометалла"
-            },
-            {
-                id: 9,
-                question1: "Типология в археологии",
-                question2: "Энеолит: общая характеристика"
-            },
-            {
-                id: 10,
-                question1: "Методы датирования археологического материала",
-                question2: "Археологические культуры энеолита"
-            },
-            {
-                id: 11,
-                question1: "Развитие техники изготовления каменных изделий в древности",
-                question2: "Бронзовый век: общая характеристика"
-            },
-            {
-                id: 12,
-                question1: "Керамика: методы исследования",
-                question2: "Археологические культуры бронзового века"
-            },
-            {
-                id: 13,
-                question1: "Этапы развития и цветной металлургии. Металлургические центры в эпоху раннего металла",
-                question2: "Общая характеристика раннего железного века"
-            },
-            {
-                id: 14,
-                question1: "Археологические разведки",
-                question2: "Ранний железный век лесной полосы Восточной Европы"
-            },
-            {
-                id: 15,
-                question1: "Археологические раскопки",
-                question2: "Ранний железный век степной зоны Евразии. Скифосибирская общность"
-            },
-            {
-                id: 16,
-                question1: "Общая характеристика каменного века",
-                question2: "Культуры сарматской эпохи"
-            },
-            {
-                id: 17,
-                question1: "Ранний палеолит",
-                question2: "Средневековые государства в Сибири в эпоху средневековья"
-            },
-            {
-                id: 18,
-                question1: "Средний палеолит",
-                question2: "Вопрос по выбору"
-            }
+            { id: 1, question1: "Законодательство РФ в сфере охраны памятников объектов историко-культурного наследия", question2: "Поздний палеолит" },
+            { id: 2, question1: "Объект и предмет археологии. Место археологии в системе наук", question2: "Археологические культуры палеолита" },
+            { id: 3, question1: "Археологические памятники и их виды", question2: "Эпоха мезолита: общая характеристика" },
+            { id: 4, question1: "Культурный слой и стратиграфия", question2: "Археологические культуры эпохи мезолита" },
+            { id: 5, question1: "Археологический источник", question2: "Эпоха неолита: общая характеристика" },
+            { id: 6, question1: "Археологическая культура", question2: "Археологические культуры эпохи неолита южной зоны производящего хозяйства" },
+            { id: 7, question1: "Хронология и периодизация в археологии", question2: "Археологические культуры эпохи неолита северной зоны присваивающего хозяйства" },
+            { id: 8, question1: "Классификация в археологии", question2: "Общая характеристика эпохи палеометалла" },
+            { id: 9, question1: "Типология в археологии", question2: "Энеолит: общая характеристика" },
+            { id: 10, question1: "Методы датирования археологического материала", question2: "Археологические культуры энеолита" },
+            { id: 11, question1: "Развитие техники изготовления каменных изделий в древности", question2: "Бронзовый век: общая характеристика" },
+            { id: 12, question1: "Керамика: методы исследования", question2: "Археологические культуры бронзового века" },
+            { id: 13, question1: "Этапы развития и цветной металлургии. Металлургические центры в эпоху раннего металла", question2: "Общая характеристика раннего железного века" },
+            { id: 14, question1: "Археологические разведки", question2: "Ранний железный век лесной полосы Восточной Европы" },
+            { id: 15, question1: "Археологические раскопки", question2: "Ранний железный век степной зоны Евразии. Скифосибирская общность" },
+            { id: 16, question1: "Общая характеристика каменного века", question2: "Культуры сарматской эпохи" },
+            { id: 17, question1: "Ранний палеолит", question2: "Средневековые государства в Сибири в эпоху средневековья" },
+            { id: 18, question1: "Средний палеолит", question2: "Вопрос по выбору" }
         ];
 
         // Ссылки на Google Таблицы
@@ -422,7 +336,7 @@
         };
 
         let takenTickets = JSON.parse(localStorage.getItem('takenTickets')) || [];
-        let currentTicket = null;
+        let sessions = JSON.parse(localStorage.getItem('sessions')) || [];
 
         // Создание кнопок
         function renderTickets() {
@@ -435,8 +349,6 @@
                 if (takenTickets.includes(ticket.id)) {
                     btn.classList.add('taken');
                 }
-                // Кнопки пустые - без номеров
-                btn.innerHTML = '';
                 btn.onclick = () => selectTicket(ticket.id);
                 grid.appendChild(btn);
             });
@@ -462,97 +374,141 @@
                 return;
             }
 
-            currentTicket = tickets.find(t => t.id === id);
+            const ticket = tickets.find(t => t.id === id);
             
-            // Показываем результат
-            document.getElementById('ticketNumber').textContent = currentTicket.id;
-            document.getElementById('resultSurname').textContent = surname;
-            document.getElementById('resultGroup').textContent = group;
-            document.getElementById('question1').textContent = currentTicket.question1;
-            document.getElementById('question2').textContent = currentTicket.question2;
-            document.getElementById('grade').value = '';
-            document.getElementById('statusMessage').className = 'status-message';
-            document.getElementById('statusMessage').textContent = '';
-            
-            document.getElementById('resultSection').classList.add('active');
+            // Создаём сессию
+            const session = {
+                id: Date.now(),
+                surname: surname,
+                group: group,
+                ticketId: ticket.id,
+                question1: ticket.question1,
+                question2: ticket.question2,
+                grade: '',
+                status: 'active'
+            };
 
-            // Отмечаем билет как взятый
+            sessions.push(session);
             takenTickets.push(id);
+            
+            localStorage.setItem('sessions', JSON.stringify(sessions));
             localStorage.setItem('takenTickets', JSON.stringify(takenTickets));
+            
+            // Очищаем поля ввода
+            document.getElementById('surname').value = '';
+            
             renderTickets();
+            renderSessions();
+        }
+
+        // Отображение сессий
+        function renderSessions() {
+            const list = document.getElementById('sessionsList');
+            
+            const activeSessions = sessions.filter(s => s.status === 'active');
+            
+            if (activeSessions.length === 0) {
+                list.innerHTML = '<div class="no-sessions">Пока нет активных сессий</div>';
+                return;
+            }
+
+            list.innerHTML = activeSessions.map(session => `
+                <div class="session-card" id="session-${session.id}">
+                    <div class="session-header">
+                        <span class="session-info">${session.surname} (${session.group})</span>
+                        <span class="session-ticket">Билет ${session.ticketId}</span>
+                    </div>
+                    <div class="session-questions">
+                        <div><span class="question-label">1.</span> ${session.question1}</div>
+                        <div><span class="question-label">2.</span> ${session.question2}</div>
+                    </div>
+                    <div class="session-controls">
+                        <select id="grade-${session.id}">
+                            <option value="">Оценка</option>
+                            <option value="5">5</option>
+                            <option value="4">4</option>
+                            <option value="3">3</option>
+                            <option value="2">2</option>
+                            <option value="неявка">Неявка</option>
+                        </select>
+                        <button class="btn btn-send" onclick="sendSession(${session.id})">📤 Отправить</button>
+                        <button class="btn btn-return" onclick="returnSession(${session.id})">🔄 Вернуть</button>
+                    </div>
+                    <div class="session-status" id="status-${session.id}" style="display:none;"></div>
+                </div>
+            `).join('');
         }
 
         // Отправка данных
-        async function sendData() {
-            const surname = document.getElementById('resultSurname').textContent;
-            const group = document.getElementById('resultGroup').textContent;
-            const grade = document.getElementById('grade').value;
-            const statusMessage = document.getElementById('statusMessage');
+        async function sendSession(sessionId) {
+            const session = sessions.find(s => s.id === sessionId);
+            const grade = document.getElementById(`grade-${sessionId}`).value;
+            const statusEl = document.getElementById(`status-${sessionId}`);
 
             if (!grade) {
                 alert('Выберите оценку!');
                 return;
             }
 
-            const sheetUrl = googleSheets[group];
-            
+            session.grade = grade;
+            const sheetUrl = googleSheets[session.group];
+
             const data = {
-                surname: surname,
-                group: group,
-                ticketNumber: currentTicket.id,
-                question1: currentTicket.question1,
-                question2: currentTicket.question2,
+                surname: session.surname,
+                group: session.group,
+                ticketNumber: session.ticketId,
+                question1: session.question1,
+                question2: session.question2,
                 grade: grade
             };
 
             try {
-                statusMessage.className = 'status-message';
-                statusMessage.textContent = 'Отправка...';
-                statusMessage.style.display = 'block';
-                statusMessage.style.background = '#fff3cd';
-                statusMessage.style.color = '#856404';
+                statusEl.style.display = 'block';
+                statusEl.className = 'session-status sending';
+                statusEl.textContent = '⏳ Отправка...';
 
                 await fetch(sheetUrl, {
                     method: 'POST',
                     mode: 'no-cors',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 });
 
-                statusMessage.className = 'status-message success';
-                statusMessage.textContent = '✅ Данные отправлены в таблицу!';
+                statusEl.className = 'session-status success';
+                statusEl.textContent = '✅ Отправлено!';
 
-                // Скрываем результат через 2 секунды
+                // Удаляем сессию через 1.5 секунды
                 setTimeout(() => {
-                    document.getElementById('resultSection').classList.remove('active');
-                    document.getElementById('surname').value = '';
-                    currentTicket = null;
-                }, 2000);
+                    sessions = sessions.filter(s => s.id !== sessionId);
+                    localStorage.setItem('sessions', JSON.stringify(sessions));
+                    renderSessions();
+                }, 1500);
 
             } catch (error) {
-                statusMessage.className = 'status-message error';
-                statusMessage.textContent = '❌ Ошибка отправки: ' + error.message;
+                statusEl.className = 'session-status error';
+                statusEl.textContent = '❌ Ошибка: ' + error.message;
             }
         }
 
         // Вернуть билет
-        function returnTicket() {
-            if (currentTicket) {
-                takenTickets = takenTickets.filter(id => id !== currentTicket.id);
+        function returnSession(sessionId) {
+            const session = sessions.find(s => s.id === sessionId);
+            
+            if (session) {
+                takenTickets = takenTickets.filter(id => id !== session.ticketId);
+                sessions = sessions.filter(s => s.id !== sessionId);
+                
                 localStorage.setItem('takenTickets', JSON.stringify(takenTickets));
+                localStorage.setItem('sessions', JSON.stringify(sessions));
+                
                 renderTickets();
-                
-                document.getElementById('resultSection').classList.remove('active');
-                currentTicket = null;
-                
-                alert('Билет возвращён!');
+                renderSessions();
             }
         }
 
         // Запуск
         renderTickets();
+        renderSessions();
     </script>
 </body>
 </html>

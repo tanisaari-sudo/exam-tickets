@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Экзаменационные билеты</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        /* Шаг ввода имени */
+        .step {
+            display: none;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        .name-form {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            margin: 50px auto;
+        }
+
+        .name-form h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .name-form p {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .name-form input {
+            width: 100%;
+            padding: 15px 20px;
+            font-size: 1.1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .name-form input:focus {
+            border-color: #667eea;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Заголовок */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        .student-name {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            margin-bottom: 15px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+        }
+
+        /* Сетка билетов */
+        .tickets-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 700px) {
+            .tickets-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 400px) {
+            .tickets-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Карточка билета */
+        .ticket-card {
+            aspect-ratio: 1;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .ticket-card.taken {
+            cursor: not-allowed;
+        }
+
+        .ticket-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .ticket-card.taken .ticket-inner {
+            transform: rotateY(180deg);
+        }
+
+        .ticket-front,
+        .ticket-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .ticket-front {
+            background: linear-gradient(145deg, #ffffff, #f0f0f0);
+            border: 3px solid #667eea;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .ticket-card:not(.taken):hover .ticket-front {
+            transform: scale(1.05);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .ticket-number {
+            font-size: 2rem;
+            color: #667eea;
+        }
+
+        .ticket-icon {
+            font-size: 1.5rem;
+            margin-top: 5px;
+        }
+
+        .ticket-back {
+            background: linear-gradient(145deg, #e0e0e0, #c0c0c0);
+            transform: rotateY(180deg);
+            border: 3px solid #999;
+        }
+
+        .ticket-back span {
+            font-size: 2.5rem;
+            color: #666;
+        }
+
+        /* Модальное окно */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 1000;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal {
+            background: white;
+            border-radius: 20px;
+            max-width: 550px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 30px;
+            text-align: center;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .modal-header h2 {
+            color: white;
+            font-size: 1.8rem;
+        }
+
+        .modal-header .student {
+            color: rgba(255,255,255,0.9);
+            margin-top: 5px;
+        }
+
+        .modal-content {
+            padding: 30px;
+        }
+
+        .question {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .question:last-of-type {
+            margin-bottom: 0;
+        }
+
+        .question-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #667eea;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .question p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        .modal-footer {
+            padding: 20px 30px 30px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn-send {
+            background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+        }
+
+        .btn-close {
+            background: #e0e0e0;
+            color: #333;
+        }
+
+        .btn-return {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        /* Панель преподавателя */
+        .teacher-panel {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 30px;
+        }
+
+        .teacher-panel h3 {
+            color: white;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .taken-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .taken-item {
+            background: white;
+            padding: 10px 15px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+        }
+
+        .taken-item .name {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .taken-item .ticket-num {
+            color: #666;
+        }
+
+        .btn-small {
+            padding: 5px 12px;
+            font-size: 0.8rem;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+        }
+
+        /* Сообщение об успехе */
+        .success-message {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #56ab2f;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            z-index: 2000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Шаг 1: Ввод фамилии -->
+        <div id="step-name" class="step active">
+            <div class="name-form">
+                <h1>📚 Экзамен</h1>
+                <p>Введите вашу фамилию, чтобы выбрать билет</p>
+                <input type="text" id="student-name" placeholder="Ваша фамилия..." autocomplete="off">
+                <br>
+                <button class="btn" id="btn-start" onclick="startExam()">Продолжить</button>
+            </div>
+        </div>
+
+        <!-- Шаг 2: Выбор билета -->
+        <div id="step-tickets" class="step">
+            <div class="header">
+                <h1>📚 Экзаменационные билеты</h1>
+                <p class="student-name">Студент: <strong id="display-name"></strong></p>
+                <div class="stats">
+                    <span class="stat">🟢 Доступно: <span id="available-count">0</span></span>
+                    <span class="stat">🔴 Занято: <span id="taken-count">0</span></span>
+                </div>
+            </div>
+
+            <div class="tickets-grid" id="tickets-grid">
+                <!-- Карточки билетов создаются через JavaScript -->
+            </div>
+
+            <!-- Панель преподавателя -->
+            <div class="teacher-panel" id="teacher-panel" style="display: none;">
+                <h3>👨‍🏫 Взятые билеты</h3>
+                <div class="taken-list" id="taken-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно с билетом -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modal-title">Билет №1</h2>
+                <p class="student">Студент: <span id="modal-student"></span></p>
+            </div>
+            <div class="modal-content">
+                <div class="question">
+                    <div class="question-label">Вопрос 1</div>
+                    <p id="modal-q1"></p>
+                </div>
+                <div class="question">
+                    <div class="question-label">Вопрос 2</div>
+                    <p id="modal-q2"></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-send" onclick="sendToSheet()">📤 Отправить в таблицу</button>
+                <button class="btn btn-close" onclick="closeModal()">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Сообщение об успехе -->
+    <div class="success-message" id="success-message">
+        ✅ Данные отправлены в таблицу!
+    </div>
+
+    <script>
+        // ========== НАСТРОЙКИ ==========
+        // Ссылка на Google Apps Script (заполнишь позже)
+        const GOOGLE_SCRIPT_URL = '';
+
+        // ========== БИЛЕТЫ ==========
+        // Здесь редактируй свои билеты!
+        const tickets = [
+            {
+                id: 1,
+                question1: "Законодательство РФ в сфере охраны памятников объектов историко-культурного наследия",
+                question2: "Поздний палеолит"
+            },
+            {
+                id: 2,
+                question1: "Объект и предмет археологии. Место археологии в системе наук",
+                question2: "Археологические культуры палеолита"
+            },
+            {
+                id: 3,
+                question1: "Археологические памятники и их виды",
+                question2: "Эпоха мезолита: общая характеристика"
+            },
+            {
+                id: 4,
+                question1: "Культурный слой и стратиграфия",
+                question2: "Археологические культуры эпохи мезолита"
+            },
+            {
+                id: 5,
+                question1: "Археологический источник",
+                question2: "Эпоха неолита: общая характеристика"
+            },
+            {
+                id: 6,
+                question1: "Археологическая культура",
+                question2: "Археологические культуры эпохи неолита южной зоны производящего хозяйства"
+            },
+            {
+                id: 7,
+                question1: "Хронология и периодизация в археологии",
+                question2: "Археологические культуры эпохи неолита северной зоны присваивающего хозяйства"
+            },
+            {
+                id: 8,
+                question1: "Классификация в археологии",
+                question2: "Общая характеристика эпохи палеометалла"
+            },
+            {
+                id: 9,
+                question1: "Типология в археологии",
+                question2: "Энеолит: общая характеристика"
+            },
+            {
+                id: 10,
+                question1: "Методы датирования археологического материала",
+                question2: "Археологические культуры энеолита"
+            },
+            {
+                id: 11,
+                question1: "Развитие техники изготовления каменных изделий в древности",
+                question2: "Бронзовый век: общая характеристика"
+            },
+            {
+                id: 12,
+                question1: "Керамика: методы исследования",
+                question2: "Археологические культуры бронзового века"
+            },
+            {
+                id: 13,
+                question1: "Этапы развития и цветной металлургии. Металлургические центры в эпоху раннего металла",
+                question2: "Общая характеристика раннего железного века"
+            },
+            {
+                id: 14,
+                question1: "Археологические разведки",
+                question2: "Ранний железный век лесной полосы Восточной Европы"
+            },
+            {
+                id: 15,
+                question1: "Археологические раскопки",
+                question2: "Ранний железный век степной зоны Евразии. Скифосибирская общность"
+            },
+            {
+                id: 16,
+                question1: "Общая характеристика каменного века",
+                question2: "Культуры сарматской эпохи"
+            },
+            {
+                id: 17,
+                question1: "Ранний палеолит",
+                question2: "Средневековые государства в Сибири в эпоху средневековья"
+            },
+            {
+                id: 18,
+                question1: "Средний палеолит",
+                question2: "Вопрос по выбору"
+            }
+        ];
+
+        // ========== СОСТОЯНИЕ ==========
+        let currentStudent = '';
+        let selectedTicket = null;
+        let takenTickets = []; // {ticketId, studentName, timestamp}
+        let shuffledTickets = [];
+
+        // ========== ФУНКЦИИ ==========
+
+        // Перемешивание массива
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        // Начать экзамен
+        function startExam() {
+            const nameInput = document.getElementById('student-name');
+            const name = nameInput.value.trim();
+            
+            if (!name) {
+                nameInput.style.borderColor = '#f5576c';
+                nameInput.placeholder = 'Введите фамилию!';
+                return;
+            }
+
+            currentStudent = name;
+            document.getElementById('display-name').textContent = name;
+            
+            // Перемешиваем билеты
+            shuffledTickets = shuffleArray(tickets);
+            
+            // Показываем экран с билетами
+            document.getElementById('step-name').classList.remove('active');
+            document.getElementById('step-tickets').classList.add('active');
+            
+            renderTickets();
+            updateStats();
+        }
+
+        // Отрисовка билетов
+        function renderTickets() {
+            const grid = document.getElementById('tickets-grid');
+            grid.innerHTML = '';
+
+            shuffledTickets.forEach(ticket => {
+                const isTaken = takenTickets.some(t => t.ticketId === ticket.id);
+                
+                const card = document.createElement('div');
+                card.className = `ticket-card ${isTaken ? 'taken' : ''}`;
+                card.onclick = () => selectTicket(ticket);
+                
+                card.innerHTML = `
+                    <div class="ticket-inner">
+                        <div class="ticket-front">
+                            <span class="ticket-number">${ticket.id}</span>
+                            <span class="ticket-icon">🎫</span>
+                        </div>
+                        <div class="ticket-back">
+                            <span>✓</span>
+                        </div>
+                    </div>
+                `;
+                
+                grid.appendChild(card);
+            });
+        }
+
+        // Выбор билета
+        function selectTicket(ticket) {
+            const isTaken = takenTickets.some(t => t.ticketId === ticket.id);
+            if (isTaken) return;
+
+            selectedTicket = ticket;
+            
+            document.getElementById('modal-title').textContent = `Билет №${ticket.id}`;
+            document.getElementById('modal-student').textContent = currentStudent;
+            document.getElementById('modal-q1').textContent = ticket.question1;
+            document.getElementById('modal-q2').textContent = ticket.question2;
+            
+            document.getElementById('modal').classList.add('active');
+        }
+
+        // Закрыть модальное окно
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        // Обновить статистику
+        function updateStats() {
+            const available = tickets.length - takenTickets.length;
+            document.getElementById('available-count').textContent = available;
+            document.getElementById('taken-count').textContent = takenTickets.length;
+            
+            // Показать/скрыть панель преподавателя
+            const panel = document.getElementById('teacher-panel');
+            if (takenTickets.length > 0) {
+                panel.style.display = 'block';
+                renderTakenList();
+            } else {
+                panel.style.display = 'none';
+            }
+        }
+
+        // Отрисовка списка взятых билетов
+        function renderTakenList() {
+            const list = document.getElementById('taken-list');
+            list.innerHTML = '';
+            
+            takenTickets.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'taken-item';
+                div.innerHTML = `
+                    <span class="name">${item.studentName}</span>
+                    <span class="ticket-num">Билет №${item.ticketId}</span>
+                    <button class="btn-small" onclick="returnTicket(${item.ticketId})">Вернуть</button>
+                `;
+                list.appendChild(div);
+            });
+        }
+
+        // Вернуть билет
+        function returnTicket(ticketId) {
+            takenTickets = takenTickets.filter(t => t.ticketId !== ticketId);
+            shuffledTickets = shuffleArray(shuffledTickets);
+            renderTickets();
+            updateStats();
+        }
+
+        // Отправить в Google Таблицу
+        function sendToSheet() {
+            if (!selectedTicket) return;
+
+            // Добавляем в список взятых
+            takenTickets.push({
+                ticketId: selectedTicket.id,
+                studentName: currentStudent,
+                timestamp: new Date().toLocaleString('ru-RU')
+            });
+
+            // Отправляем в Google Sheets (если настроено)
+            if (GOOGLE_SCRIPT_URL) {
+                const data = {
+                    student: currentStudent,
+                    ticketId: selectedTicket.id,
+                    question1: selectedTicket.question1,
+                    question2: selectedTicket.question2,
+                    timestamp: new Date().toLocaleString('ru-RU')
+                };
+
+                fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+            }
+
+            // Закрываем модальное окно
+            closeModal();
+
+            // Показываем сообщение об успехе
+            const msg = document.getElementById('success-message');
+            msg.classList.add('show');
+            setTimeout(() => msg.classList.remove('show'), 3000);
+
+            // Перемешиваем и обновляем
+            shuffledTickets = shuffleArray(shuffledTickets);
+            renderTickets();
+            updateStats();
+
+            // Сбрасываем для следующего студента
+            currentStudent = '';
+            document.getElementById('student-name').value = '';
+            
+            // Возвращаемся к вводу имени
+            setTimeout(() => {
+                document.getElementById('step-tickets').classList.remove('active');
+                document.getElementById('step-name').classList.add('active');
+            }, 1500);
+        }
+
+        // Обработка Enter в поле ввода
+        document.getElementById('student-name').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                startExam();
+            }
+        });
+    </script>
+</body>
+</html>
